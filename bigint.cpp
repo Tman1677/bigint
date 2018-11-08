@@ -1,26 +1,32 @@
 #include <bitset>
 #include <iostream>
 
-std::bitset<8> add(std::bitset<8> a, std::bitset<8> b);
+class bigint {
+  private:
+	std::bitset<8> bits;
+  public:
+	bigint(int);
 
-int main() {
-	std::bitset<8> test1;
-	std::bitset<8> test2;
-	test1 = 1;
-	test2 = 3;
+	friend std::ostream& operator<<(std::ostream&, const bigint&);
+	friend bigint operator+(bigint object1, bigint object2);
+};
 
-	std::cout << add(test1, test2) << std::endl;
+std::ostream& operator<<(std::ostream& outstream, const bigint& object1) {
+	//this will have to change eventually to allow for bigger integers to be printed correctly
+	outstream << object1.bits.to_ullong();
+	return outstream;
 }
+bigint::bigint(int primitive1): bits(primitive1) {}
 
-std::bitset<8> add(std::bitset<8> a, std::bitset<8> b) {
+bigint operator+(bigint object1, bigint object2) {
 	// First priority once this thing is running is optimizing this function as
 	// there has got to be a better way to do this
-	static std::bitset<8> temp;
-	while (!b.none()) {
-		temp = a ^ b;
-		b = (a & b) << 1;
-		a = std::move(temp);
+	std::bitset<8> temp;
+	while (!object2.bits.none()) {
+		temp = object1.bits ^ object2.bits;
+		object2.bits = (object1.bits & object2.bits) << 1;
+		object1.bits = std::move(temp);
 	}
 
-	return a;
+	return std::move(object1);
 }
