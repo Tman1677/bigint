@@ -13,10 +13,13 @@ class bigint {
 	bool operator[] (std::size_t index) const;
 
 	friend std::ostream& operator<<(std::ostream&, const bigint&);
-	friend bigint operator+(bigint object1, bigint object2);
-	friend bigint operator+(int primitive1, bigint object2);
-	friend bigint operator+(bigint object1, int primitive1);
-	friend bigint operator-(bigint object1);
+	friend bigint operator+(bigint, bigint);
+	friend bigint operator+(int, bigint);
+	friend bigint operator+(bigint, int);
+	friend bigint operator-(bigint);
+	friend bigint operator-(const bigint&, const bigint&);
+	friend bigint operator-(const bigint&, int);
+	friend bigint operator-(int, const bigint&);
 };
 
 std::ostream& operator<<(std::ostream& outstream, const bigint& object1) {
@@ -73,4 +76,13 @@ bigint operator-(bigint object1) {
 	//needs optimization
 	object1.bits = ~object1.bits;
 	return object1 + 1;
+}
+bigint operator-(const bigint& object1, const bigint& object2) {
+	return object1 + -object2;
+}
+bigint operator-(const bigint& object1, int primitive1) {
+	return object1 + -primitive1;
+}
+bigint operator-(int primitive1, const bigint& object1) {
+	return object1 + -primitive1;
 }
